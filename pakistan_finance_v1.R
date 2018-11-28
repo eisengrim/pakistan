@@ -24,6 +24,8 @@ library(RColorBrewer)
 
 theme_set(theme_minimal())
 
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
 ## load data
 
 ## plots to make:
@@ -170,21 +172,23 @@ wdi.p$`Country Name`[wdi.p$`Country Name` == "Egypt, Arab Rep."] <- "Egypt"
 wdi.p$`Country Name`[wdi.p$`Country Name` == "Iran, Islamic Rep."] <- "Iran"
 wdi.p$`Country Name`[wdi.p$`Country Name` == "Syrian Arab Republic"] <- "Syria"
 wdi.p$`Country Name`[wdi.p$`Country Name` == "United Arab Emirates"] <- "UAE"
-wdi.p$`Country Name`[wdi.p$`Country Name` == "Yemen, Rep."] <- "Yemen"
+
+# disable scientific notation
+options(scipen = 999)
 
 # plot
-ggplot(data=wdi.p, 
+ggplot(data=wdi.p%>% filter(`Country Name` %!in% c("Kuwait", "Qatar")), 
        aes(x=reorder(`Country Name`, `2016`), y=`2016`, group=is.pak, fill=is.pak)) +
   geom_bar(stat="identity") +
   labs(x="Country", y="Total Military Personnel",
-       title="Military personnel of the Islamic World",
-       subtitle="Military personnel by country, 2016",
+       title="Military Forces Across the Islamic World",
+       subtitle="Total military personnel by country, 2016",
        caption="Author: Kody Crowell (@hummushero); Source: IISS (2018)") +
   theme_mir() +
   coord_flip() +
   scale_fill_manual(values=c(mir.red, mir.gray)) +
   guides(fill=F) +
-  geom_text(aes(label = round(`2016`, 3)), family="Georgia", hjust=-0.5) +
+  geom_text(aes(label = as.character(`2016`)), family="Georgia", hjust=1.1, color=mir.white) +
   theme(strip.text.x = element_text(size=rel(1)),
         strip.text.y = element_text(size=rel(1)),
         strip.background = element_blank(),
@@ -195,7 +199,7 @@ ggplot(data=wdi.p,
         plot.subtitle = element_text(size=12, color=mir.gray, face="italic",
                                      margin=margin(b=25)),
         plot.caption = element_text(size=10, margin=margin(t=-10), 
-                                    color="grey60", hjust=1)) # 
+                                    color="grey60", hjust=1)) #  1400x800
  
 
 
