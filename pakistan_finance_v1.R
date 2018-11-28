@@ -29,7 +29,8 @@ theme_set(theme_minimal())
 ## plots to make:
 # pakistan's % military spending wrt rest of mid east
 # pakistan's imf debt  foreign debt over time
-# trade balance over time
+# trade balance over time ?
+# military numbers compared to others
 
 mil <- read_xlsx("SIPRI-Milex-data-1949-2017.xlsx", sheet=9, range="A8:AG198",
                  col_names = T)
@@ -82,7 +83,6 @@ mil.p$Country[mil.p$Country %in% "Kazakhstan"] <- "Kazakhstan †"
 mil.p$Country[mil.p$Country %in% "Nepal"] <- "Nepal ¶"
 mil.p$Country[mil.p$Country %in% "Pakistan"] <- "Pakistan ‡"
 mil.p$Country[mil.p$Country %in% "Saudi Arabia"] <- "Saudi Arabia §"
-
 
 # plot
 ggplot(data=mil.p, 
@@ -155,4 +155,48 @@ ggplot(data=eiu.long %>% filter(code %in% c('TDBT', 'IMFL')),
                                      margin=margin(b=25)),
         plot.caption = element_text(size=10, margin=margin(t=10), 
                                     color="grey60", hjust=0))
+
+# load total armed forces personnel info
+wdi <- read_xls("API_MS.MIL.TOTL.P1_DS2_en_excel_v2_10226453.xls", col_names=T)
+
+wdi <- wdi %>% 
+  select(`Country Name`, `2016`)
+
+wdi.p <- wdi %>%
+  filter(`Country Name` != "Libya") %>%
+  mutate(is.pak = as.factor(ifelse(`Country Name`=="Pakistan", 1, 0)))
+
+wdi.p$`Country Name`[wdi.p$`Country Name` == "Egypt, Arab Rep."] <- "Egypt"
+wdi.p$`Country Name`[wdi.p$`Country Name` == "Iran, Islamic Rep."] <- "Iran"
+wdi.p$`Country Name`[wdi.p$`Country Name` == "Syrian Arab Republic"] <- "Syria"
+wdi.p$`Country Name`[wdi.p$`Country Name` == "United Arab Emirates"] <- "UAE"
+wdi.p$`Country Name`[wdi.p$`Country Name` == "Yemen, Rep."] <- "Yemen"
+
+# plot
+ggplot(data=wdi.p, 
+       aes(x=reorder(`Country Name`, `2016`), y=`2016`, group=is.pak, fill=is.pak)) +
+  geom_bar(stat="identity") +
+  labs(x="Country", y="Total Military Personnel",
+       title="Military personnel of the Islamic World",
+       subtitle="Military personnel by country, 2016",
+       caption="Author: Kody Crowell (@hummushero); Source: IISS (2018)") +
+  theme_mir() +
+  coord_flip() +
+  scale_fill_manual(values=c(mir.red, mir.gray)) +
+  guides(fill=F) +
+  geom_text(aes(label = round(`2016`, 3)), family="Georgia", hjust=-0.5) +
+  theme(strip.text.x = element_text(size=rel(1)),
+        strip.text.y = element_text(size=rel(1)),
+        strip.background = element_blank(),
+        legend.background = element_blank(),
+        axis.title.y = element_blank(), 
+        legend.justification = c(0, 0),
+        plot.title = element_text(size=18, margin=margin(b=10)),
+        plot.subtitle = element_text(size=12, color=mir.gray, face="italic",
+                                     margin=margin(b=25)),
+        plot.caption = element_text(size=10, margin=margin(t=-10), 
+                                    color="grey60", hjust=1)) # 
+ 
+
+
 
