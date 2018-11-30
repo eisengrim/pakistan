@@ -140,7 +140,7 @@ ggplot(data=eiu.long %>% filter(code %in% c('TDBT', 'IMFL')),
        title="Pakistan's Financial Finesse",
        subtitle="IMF and Foreign Debt in Pakistan, 1980-2017",
        caption="Author: Kody Crowell (@hummushero)\nSource: Economist Intelligence Unit (2018)") +
-  scale_color_manual(values=rev(red.ramp[c(7,5)]), name="", labels=c("Total Foreign Debt","IMF Debt"),
+  scale_color_manual(values=rev(red.ramp[c(7,5)]), name="", labels=c("IMF Debt", "Total Foreign Debt"),
                      guide = guide_legend(
                        direction = "vertical", keyheight = unit(2, units = "mm"),
                        keywidth = unit(50/length(labels), units = "mm"),
