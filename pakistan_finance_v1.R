@@ -87,7 +87,7 @@ mil.p$Country[mil.p$Country %in% "Pakistan"] <- "Pakistan ‡"
 mil.p$Country[mil.p$Country %in% "Saudi Arabia"] <- "Saudi Arabia §"
 
 # plot
-ggplot(data=mil.p, 
+ggplot(data=mil.p %>% mutate(`2017` = `2017`*100), 
        aes(x=reorder(Country, `2017`), y=`2017`, group=is.pak, fill=is.pak)) +
   geom_bar(stat="identity") +
   labs(x="Country", y="Military Spending (% general government expenditure)",
@@ -103,7 +103,8 @@ ggplot(data=mil.p,
   coord_flip() +
   scale_fill_manual(values=c(mir.red, mir.gray)) +
   guides(fill=F) +
-  geom_text(aes(label = round(`2017`,3)), family="Georgia", hjust=-0.5) +
+  geom_text(aes(label = round(`2017`, 2)), family="Georgia", hjust=1.1, color=mir.white) +
+  # geom_text(aes(label = round(`2017`,2)), family="Georgia", hjust=-0.5) +
   theme(strip.text.x = element_text(size=rel(1)),
         strip.text.y = element_text(size=rel(1)),
         strip.background = element_blank(),
@@ -199,8 +200,8 @@ ggplot(data=wdi.p%>% filter(`Country Name` %!in% c("Kuwait", "Qatar")),
         plot.subtitle = element_text(size=12, color=mir.gray, face="italic",
                                      margin=margin(b=25)),
         plot.caption = element_text(size=10, margin=margin(t=-10), 
-                                    color="grey60", hjust=1)) #  1400x800
- 
+                                    color="grey60", hjust=1)) # 1400x800
+
 
 
 
